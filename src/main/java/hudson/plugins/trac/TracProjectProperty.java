@@ -35,6 +35,7 @@ public final class TracProjectProperty extends JobProperty<AbstractProject<?,?>>
 
         public DescriptorImpl() {
             super(TracProjectProperty.class);
+            load();
         }
 
         public boolean isApplicable(Class<? extends Job> jobType) {
