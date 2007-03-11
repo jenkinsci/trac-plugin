@@ -9,14 +9,31 @@ import org.kohsuke.stapler.StaplerRequest;
 /**
  * Property for {@link AbstractProject} that stores the associated Trac website URL.
  *
- * <p>
- * TODO: right now, only the system-wide configuration is implemented, but not
- * project-local configuration. But since the latter would be a natural extension,
- * this class extends {@link JobProperty}.
- *
  * @author Kohsuke Kawaguchi
  */
 public final class TracProjectProperty extends JobProperty<AbstractProject<?,?>> {
+
+    /**
+     * Trac website URL that this project uses.
+     *
+     * This value is normalized and therefore it always ends with '/'.
+     * Null if this is not configured yet.
+     */
+    public final String tracWebsite;
+
+    /**
+     * @stapler-constructor
+     */
+    public TracProjectProperty(String tracWebsite) {
+        // normalize
+        if(tracWebsite.length()==0)
+            tracWebsite=null;
+        else {
+            if(!tracWebsite.endsWith("/"))
+                tracWebsite += '/';
+        }
+        this.tracWebsite = tracWebsite;
+    }
 
     public DescriptorImpl getDescriptor() {
         return DESCRIPTOR;
@@ -25,13 +42,8 @@ public final class TracProjectProperty extends JobProperty<AbstractProject<?,?>>
     public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
 
     public static final class DescriptorImpl extends JobPropertyDescriptor {
-        /**
-         * Trac website URL that these projects use.
-         *
-         * This value is normalized and therefore it always ends with '/'.
-         * Null if this is not configured yet.
-         */
-        public String tracWebsite;
+        // no longer in use but kept for backward compatibility
+        private transient String tracWebsite;
 
         public DescriptorImpl() {
             super(TracProjectProperty.class);
@@ -47,19 +59,10 @@ public final class TracProjectProperty extends JobProperty<AbstractProject<?,?>>
         }
 
         public JobProperty<?> newInstance(StaplerRequest req) throws FormException {
-            // TODO: support per-project override to the system-wide setting
-            return new TracProjectProperty();
-        }
-
-        public boolean configure(StaplerRequest req) throws FormException {
-            req.bindParameters(this,"trac.");
-            if(tracWebsite.length()==0) tracWebsite=null;
-            else {
-                if(!tracWebsite.endsWith("/"))
-                    tracWebsite += '/';
-            }
-            save();
-            return true;
+            TracProjectProperty tpp = req.bindParameters(TracProjectProperty.class, "trac.");
+            if(tpp.tracWebsite==null)
+                tpp = null; // not configured
+            return tpp;
         }
     }
 }

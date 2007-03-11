@@ -17,8 +17,12 @@ import java.util.regex.Pattern;
 public class TracLinkAnnotator extends ChangeLogAnnotator {
     @Override
     public void annotate(AbstractBuild<?,?> build, Entry change, MarkupText text) {
+        TracProjectProperty tpp = build.getProject().getProperty(TracProjectProperty.class);
+        if(tpp==null || tpp.tracWebsite==null)
+            return; // not configured
+
         for (LinkMarkup markup : MARKUPS)
-            markup.process(text);
+            markup.process(text,tpp);
     }
 
     private static final class LinkMarkup {
@@ -32,9 +36,8 @@ public class TracLinkAnnotator extends ChangeLogAnnotator {
             this.href = href;
         }
 
-        void process(MarkupText text) {
-            String url = TracProjectProperty.DESCRIPTOR.tracWebsite;
-            if(url==null)   return; // not configured yet
+        void process(MarkupText text, TracProjectProperty prop) {
+            String url = prop.tracWebsite;
 
             for(SubText st : text.findTokens(pattern)) {
                 st.surroundWith(
