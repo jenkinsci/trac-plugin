@@ -26,7 +26,7 @@ public final class TracProjectProperty extends JobProperty<AbstractProject<?,?>>
      */
     public TracProjectProperty(String tracWebsite) {
         // normalize
-        if(tracWebsite.length()==0)
+        if(tracWebsite==null || tracWebsite.length()==0)
             tracWebsite=null;
         else {
             if(!tracWebsite.endsWith("/"))
