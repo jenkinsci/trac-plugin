@@ -1,6 +1,7 @@
 package hudson.plugins.trac;
 
 import hudson.model.Descriptor;
+import hudson.model.AbstractProject;
 import hudson.scm.RepositoryBrowser;
 import hudson.scm.SubversionChangeLogSet.LogEntry;
 import hudson.scm.SubversionChangeLogSet.Path;
@@ -17,17 +18,31 @@ public class TracRepositoryBrowser extends SubversionRepositoryBrowser {
     public TracRepositoryBrowser() {
     }
 
+    /**
+     * Gets the {@link TracProjectProperty#tracWebsite} value configured
+     * for the current project.
+     */
+    private String getTracWebURL(LogEntry cs) {
+        AbstractProject<?,?> p = cs.getParent().build.getProject();
+        TracProjectProperty tpp = p.getProperty(TracProjectProperty.class);
+        if(tpp==null)   return null;
+        else            return tpp.tracWebsite;
+    }
+
     public URL getDiffLink(Path path) throws IOException {
+        String baseUrl = getTracWebURL(path.getLogEntry());
         // TODO
         throw new UnsupportedOperationException();
     }
 
     public URL getFileLink(Path path) throws IOException {
+        String baseUrl = getTracWebURL(path.getLogEntry());
         // TODO
         throw new UnsupportedOperationException();
     }
 
     public URL getChangeSetLink(LogEntry changeSet) throws IOException {
+        String baseUrl = getTracWebURL(changeSet);
         // TODO
         throw new UnsupportedOperationException();
     }
