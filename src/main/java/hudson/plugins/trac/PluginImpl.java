@@ -1,6 +1,7 @@
 package hudson.plugins.trac;
 
 import hudson.Plugin;
+import hudson.scm.RepositoryBrowsers;
 import hudson.model.Jobs;
 
 /**
@@ -16,6 +17,7 @@ public class PluginImpl extends Plugin {
     public void start() throws Exception {
         annotator.register();
         Jobs.PROPERTIES.add(TracProjectProperty.DESCRIPTOR);
+        RepositoryBrowsers.LIST.add(TracRepositoryBrowser.DESCRIPTOR);
     }
 
     public void stop() throws Exception {
