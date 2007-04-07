@@ -1,8 +1,8 @@
 package hudson.plugins.trac;
 
 import hudson.Plugin;
-import hudson.scm.RepositoryBrowsers;
 import hudson.model.Jobs;
+import hudson.scm.RepositoryBrowsers;
 
 /**
  * Entry point of the plugin.
