@@ -1,0 +1,6 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+  <f:entry title="Trac website"
+    help="/plugin/trac/help-global.html">
+    <f:textbox name="trac.tracWebsite" value="${instance.tracWebsite}" />
+  </f:entry>
+</j:jelly>
