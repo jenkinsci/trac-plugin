@@ -49,7 +49,7 @@ public class TracRepositoryBrowser extends SubversionRepositoryBrowser {
     @Override
     public URL getChangeSetLink(LogEntry changeSet) throws IOException {
         URL baseUrl = getTracWebURL(changeSet);
-        return baseUrl == null ? null : new URL(baseUrl, "changeset" + changeSet.getRevision());
+        return baseUrl == null ? null : new URL(baseUrl, "changeset/" + changeSet.getRevision());
     }
 
     public DescriptorImpl getDescriptor() {
