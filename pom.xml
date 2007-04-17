@@ -8,7 +8,7 @@
   </parent>
   
   <artifactId>trac</artifactId>
-  <version>1.4-SNAPSHOT</version>
+  <version>1.4</version>
   <packaging>hpi</packaging>
   <name>Hudson plugin for Edgewall Trac</name>
   
@@ -20,4 +20,8 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <scm>
+    <tag>trac-1_4</tag>
+  </scm>
 </project>
