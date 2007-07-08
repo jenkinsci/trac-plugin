@@ -10,7 +10,7 @@
   <artifactId>trac</artifactId>
   <version>1.5-SNAPSHOT</version>
   <packaging>hpi</packaging>
-  <name>Hudson plugin for Edgewall Trac</name>
+  <name>Hudson Edgewall Trac plugin</name>
   
   <dependencies>
     <dependency>
