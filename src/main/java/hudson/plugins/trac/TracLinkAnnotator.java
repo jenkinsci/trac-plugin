@@ -21,11 +21,12 @@ public class TracLinkAnnotator extends ChangeLogAnnotator {
         if(tpp==null || tpp.tracWebsite==null)
             return; // not configured
 
+        String url = tpp.tracWebsite;
         for (LinkMarkup markup : MARKUPS)
-            markup.process(text,tpp);
+            markup.process(text, url);
     }
 
-    private static final class LinkMarkup {
+    static final class LinkMarkup {
         private final Pattern pattern;
         private final String href;
 
@@ -36,9 +37,7 @@ public class TracLinkAnnotator extends ChangeLogAnnotator {
             this.href = href;
         }
 
-        void process(MarkupText text, TracProjectProperty prop) {
-            String url = prop.tracWebsite;
-
+        void process(MarkupText text, String url) {
             for(SubText st : text.findTokens(pattern)) {
                 st.surroundWith(
                     "<a href='"+url+href+"'>",
@@ -50,7 +49,7 @@ public class TracLinkAnnotator extends ChangeLogAnnotator {
         private static final Pattern ANYWORD_PATTERN = Pattern.compile("ANYWORD");
     }
 
-    private static final LinkMarkup[] MARKUPS = new LinkMarkup[] {
+    static final LinkMarkup[] MARKUPS = new LinkMarkup[] {
         new LinkMarkup(
             "(?:#|ticket:)NUM",
             "ticket/$1"),
