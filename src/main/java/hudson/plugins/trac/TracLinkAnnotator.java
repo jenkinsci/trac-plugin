@@ -68,7 +68,7 @@ public class TracLinkAnnotator extends ChangeLogAnnotator {
         // TODO: log:trunk@1:3 format
         // TODO: diffs
         new LinkMarkup(
-            "((?:[A-Z][a-z]+)+)|wiki:ANYWORD",
+            "((?:[A-Z][a-z]+){2,})|wiki:ANYWORD",
             "wiki/$1$2"),
         new LinkMarkup(
             "milestone:ANYWORD",
