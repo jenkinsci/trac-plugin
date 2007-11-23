@@ -11,13 +11,5 @@
   <version>1.6-SNAPSHOT</version>
   <packaging>hpi</packaging>
   <name>Hudson Edgewall Trac plugin</name>
-  
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+  <url>http://hudson.gotdns.com/wiki/display/HUDSON/Trac+Plugin</url>
 </project>
