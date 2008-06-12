@@ -5,6 +5,7 @@ import hudson.model.Job;
 import hudson.model.JobProperty;
 import hudson.model.JobPropertyDescriptor;
 import hudson.model.Descriptor;
+import hudson.model.Action;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.DataBoundConstructor;
 import net.sf.json.JSONObject;
@@ -34,6 +35,11 @@ public final class TracProjectProperty extends JobProperty<AbstractProject<?,?>>
                 tracWebsite += '/';
         }
         this.tracWebsite = tracWebsite;
+    }
+
+    @Override
+    public Action getJobAction(AbstractProject<?,?> job) {
+        return new TracLinkAction(this);
     }
 
     public DescriptorImpl getDescriptor() {
