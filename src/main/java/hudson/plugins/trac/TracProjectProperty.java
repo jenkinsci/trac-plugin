@@ -4,7 +4,10 @@ import hudson.model.AbstractProject;
 import hudson.model.Job;
 import hudson.model.JobProperty;
 import hudson.model.JobPropertyDescriptor;
+import hudson.model.Descriptor;
 import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.DataBoundConstructor;
+import net.sf.json.JSONObject;
 
 /**
  * Property for {@link AbstractProject} that stores the associated Trac website URL.
@@ -21,9 +24,7 @@ public final class TracProjectProperty extends JobProperty<AbstractProject<?,?>>
      */
     public final String tracWebsite;
 
-    /**
-     * @stapler-constructor
-     */
+    @DataBoundConstructor
     public TracProjectProperty(String tracWebsite) {
         // normalize
         if(tracWebsite==null || tracWebsite.length()==0)
@@ -58,8 +59,9 @@ public final class TracProjectProperty extends JobProperty<AbstractProject<?,?>>
             return "Associated Trac website";
         }
 
-        public JobProperty<?> newInstance(StaplerRequest req) throws FormException {
-            TracProjectProperty tpp = req.bindParameters(TracProjectProperty.class, "trac.");
+        @Override
+        public JobProperty<?> newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+            TracProjectProperty tpp = req.bindJSON(TracProjectProperty.class,formData);
             if(tpp.tracWebsite==null)
                 tpp = null; // not configured
             return tpp;
