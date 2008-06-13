@@ -25,7 +25,7 @@ public class TracRepositoryBrowser extends SubversionRepositoryBrowser {
      * configured for the current project.
      */
     private URL getTracWebURL(LogEntry cs) throws MalformedURLException {
-        AbstractProject<?,?> p = cs.getParent().build.getProject();
+        AbstractProject<?,?> p = (AbstractProject<?,?>)cs.getParent().build.getProject();
         TracProjectProperty tpp = p.getProperty(TracProjectProperty.class);
         if(tpp==null)   return null;
         else            return new URL(tpp.tracWebsite);
