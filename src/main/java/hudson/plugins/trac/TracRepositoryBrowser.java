@@ -8,6 +8,7 @@ import hudson.scm.SubversionChangeLogSet.LogEntry;
 import hudson.scm.SubversionChangeLogSet.Path;
 import hudson.scm.SubversionRepositoryBrowser;
 import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -17,6 +18,7 @@ import java.net.URL;
  * {@link SubversionRepositoryBrowser} that produces Trac links.
  */
 public class TracRepositoryBrowser extends SubversionRepositoryBrowser {
+    @DataBoundConstructor
     public TracRepositoryBrowser() {
     }
 
@@ -65,10 +67,6 @@ public class TracRepositoryBrowser extends SubversionRepositoryBrowser {
 
         public String getDisplayName() {
             return "Trac";
-        }
-
-        public TracRepositoryBrowser newInstance(StaplerRequest req) throws FormException {
-            return new TracRepositoryBrowser();
         }
     }
 }
