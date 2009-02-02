@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
  * notation in changelog messages.
  *
  * @author Kohsuke Kawaguchi
+ * @author Rick Riemer
  */
 public class TracLinkAnnotator extends ChangeLogAnnotator {
     @Override
@@ -21,12 +22,16 @@ public class TracLinkAnnotator extends ChangeLogAnnotator {
         if(tpp==null || tpp.tracWebsite==null)
             return; // not configured
 
-        String url = tpp.tracWebsite;
-        for (LinkMarkup markup : MARKUPS)
-            markup.process(text, url);
+        annotate(tpp.tracWebsite, text);
     }
 
-    static final class LinkMarkup {
+    void annotate(String url, MarkupText text) {
+        for (LinkMarkup markup : MARKUPS) {
+            markup.process(text, url);
+        }
+    }
+
+    private static final class LinkMarkup {
         private final Pattern pattern;
         private final String href;
 
@@ -49,7 +54,7 @@ public class TracLinkAnnotator extends ChangeLogAnnotator {
         private static final Pattern ANYWORD_PATTERN = Pattern.compile("ANYWORD");
     }
 
-    static final LinkMarkup[] MARKUPS = new LinkMarkup[] {
+    private static final LinkMarkup[] MARKUPS = new LinkMarkup[] {
         new LinkMarkup(
             "(?:#|ticket:)NUM",
             "ticket/$1"),

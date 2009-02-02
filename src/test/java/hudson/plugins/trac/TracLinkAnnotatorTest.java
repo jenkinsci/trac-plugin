@@ -17,9 +17,8 @@ public class TracLinkAnnotatorTest extends TestCase {
     private void assertAnnotatedTextEquals(String originalText, String expectedAnnotatedText) {
         MarkupText markupText = new MarkupText(originalText);
 
-        for (TracLinkAnnotator.LinkMarkup markup : TracLinkAnnotator.MARKUPS) {
-            markup.process(markupText, TRAC_URL);
-        }
+        TracLinkAnnotator annotator = new TracLinkAnnotator();
+        annotator.annotate(TRAC_URL, markupText);
 
         assertEquals(expectedAnnotatedText, markupText.toString());
     }
