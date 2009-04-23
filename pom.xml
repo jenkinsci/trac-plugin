@@ -11,5 +11,5 @@
   <version>1.9-SNAPSHOT</version>
   <packaging>hpi</packaging>
   <name>Hudson Edgewall Trac plugin</name>
-  <url>http://hudson.gotdns.com/wiki/display/HUDSON/Trac+Plugin</url>
+  <url>http://wiki.hudson-ci.org/display/HUDSON/Trac+Plugin</url>
 </project>
