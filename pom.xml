@@ -12,4 +12,12 @@
   <packaging>hpi</packaging>
   <name>Hudson Edgewall Trac plugin</name>
   <url>http://wiki.hudson-ci.org/display/HUDSON/Trac+Plugin</url>
+  
+  <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>subversion</artifactId>
+      <version>1.1</version>
+    </dependency>
+  </dependencies>
 </project>
