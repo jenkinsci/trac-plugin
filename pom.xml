@@ -8,7 +8,7 @@
   </parent>
   
   <artifactId>trac</artifactId>
-  <version>1.10-SNAPSHOT</version>
+  <version>1.9-SNAPSHOT</version>
   <packaging>hpi</packaging>
   <name>Hudson Edgewall Trac plugin</name>
   <url>http://wiki.hudson-ci.org/display/HUDSON/Trac+Plugin</url>
