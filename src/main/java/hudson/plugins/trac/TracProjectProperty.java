@@ -1,10 +1,10 @@
 package hudson.plugins.trac;
 
+import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.model.Job;
 import hudson.model.JobProperty;
 import hudson.model.JobPropertyDescriptor;
-import hudson.model.Descriptor;
 import hudson.model.Action;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -42,12 +42,7 @@ public final class TracProjectProperty extends JobProperty<AbstractProject<?,?>>
         return new TracLinkAction(this);
     }
 
-    public DescriptorImpl getDescriptor() {
-        return DESCRIPTOR;
-    }
-
-    public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
-
+    @Extension
     public static final class DescriptorImpl extends JobPropertyDescriptor {
         // no longer in use but kept for backward compatibility
         private transient String tracWebsite;
@@ -57,6 +52,7 @@ public final class TracProjectProperty extends JobProperty<AbstractProject<?,?>>
             load();
         }
 
+        @Override
         public boolean isApplicable(Class<? extends Job> jobType) {
             return AbstractProject.class.isAssignableFrom(jobType);
         }

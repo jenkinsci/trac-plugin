@@ -1,5 +1,6 @@
 package hudson.plugins.trac;
 
+import hudson.Extension;
 import hudson.MarkupText;
 import hudson.MarkupText.SubText;
 import hudson.model.AbstractBuild;
@@ -16,6 +17,7 @@ import java.util.regex.Pattern;
  * @author Kohsuke Kawaguchi
  * @author Rick Riemer
  */
+@Extension
 public class TracLinkAnnotator extends ChangeLogAnnotator {
     @Override
     public void annotate(AbstractBuild<?,?> build, Entry change, MarkupText text) {

@@ -1,5 +1,6 @@
 package hudson.plugins.trac;
 
+import hudson.Extension;
 import hudson.model.Descriptor;
 import hudson.model.AbstractProject;
 import hudson.scm.EditType;
@@ -7,7 +8,6 @@ import hudson.scm.RepositoryBrowser;
 import hudson.scm.SubversionChangeLogSet.LogEntry;
 import hudson.scm.SubversionChangeLogSet.Path;
 import hudson.scm.SubversionRepositoryBrowser;
-import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
@@ -54,12 +54,7 @@ public class TracRepositoryBrowser extends SubversionRepositoryBrowser {
         return baseUrl == null ? null : new URL(baseUrl, "changeset/" + changeSet.getRevision());
     }
 
-    public DescriptorImpl getDescriptor() {
-        return DESCRIPTOR;
-    }
-
-    public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
-
+    @Extension
     public static final class DescriptorImpl extends Descriptor<RepositoryBrowser<?>> {
         public DescriptorImpl() {
             super(TracRepositoryBrowser.class);
