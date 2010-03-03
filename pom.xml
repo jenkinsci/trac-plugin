@@ -8,7 +8,7 @@
   </parent>
   
   <artifactId>trac</artifactId>
-  <version>1.10-SNAPSHOT</version>
+  <version>1.10</version>
   <packaging>hpi</packaging>
   <name>Hudson Edgewall Trac plugin</name>
   <url>http://wiki.hudson-ci.org/display/HUDSON/Trac+Plugin</url>
@@ -35,4 +35,10 @@
       <version>[1.3,)</version>
     </dependency>
   </dependencies>
+
+  <scm>
+    <connection>scm:svn:https://guest@svn.dev.java.net/svn/hudson/tags/trac-1.10</connection>
+    <developerConnection>scm:svn:https://svn.dev.java.net/svn/hudson/tags/trac-1.10</developerConnection>
+    <url>https://hudson.dev.java.net/source/browse/hudson/tags/trac-1.10</url>
+  </scm>
 </project>
