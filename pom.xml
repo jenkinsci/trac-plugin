@@ -45,7 +45,7 @@
   <licenses>
     <license>
       <name>The MIT license</name>
-      <url>https://github.com/jenkinsci/console-column-plugin/raw/master/LICENSE.txt</url>
+      <url>https://github.com/jenkinsci/trac-plugin/raw/master/LICENSE.txt</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -72,9 +72,9 @@
   </developers>
 
   <scm>
-    <connection>scm:git:git://github.com/jenkinsci/console-column-plugin.git</connection>
-    <developerConnection>scm:git:git@github.com:jenkinsci/console-column-plugin.git</developerConnection>
-    <url>https://github.com/jenkinsci/console-column-plugin</url>
+    <connection>scm:git:git://github.com/jenkinsci/trac-plugin.git</connection>
+    <developerConnection>scm:git:git@github.com:jenkinsci/trac-plugin.git</developerConnection>
+    <url>https://github.com/jenkinsci/trac-plugin</url>
   </scm>
 
   <repositories>
@@ -98,7 +98,7 @@
     </repository>
     <site>
       <id>github-project-site</id>
-      <url>gitsite:git@github.com/jenkinsci/console-column-plugin</url>
+      <url>gitsite:git@github.com/jenkinsci/trac-plugin</url>
     </site>
   </distributionManagement>
 
