@@ -9,7 +9,6 @@ import hudson.plugins.git.browser.GitRepositoryBrowser;
 import hudson.scm.ChangeLogSet;
 import hudson.scm.EditType;
 import hudson.scm.RepositoryBrowser;
-import hudson.scm.SubversionRepositoryBrowser;
 import hudson.scm.browsers.QueryBuilder;
 
 import java.io.IOException;
@@ -19,7 +18,9 @@ import java.net.URL;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
- * {@link SubversionRepositoryBrowser} that produces Trac links.
+ * {@link GitRepositoryBrowser} that produces Trac links.
+ * 
+ *  @author Gerd Zanker (gerd.zanker@web.de)
  */
 public class TracGitRepositoryBrowser extends GitRepositoryBrowser {
     
@@ -48,14 +49,15 @@ public class TracGitRepositoryBrowser extends GitRepositoryBrowser {
 
     @Override
     public URL getDiffLink(Path path) throws IOException {
-    	// normally the diffs of a changeset are shown on one Trac HTML page and use the pattern 
-    	// <url>"/changeset/"<changesetID>"#file"<NoOfFileInChangeset>
-    	// BUt because the git changeset doesn't return an order list (only a HashSet)
-    	// it is not possible to get correct index for the file inside the changeset
-    	
+    	// Normally the diffs of a changeset are shown on one single Trac HTML page 
+    	// and use the pattern <url>"/changeset/"<changesetID>"#file"<NoOfFileInChangeset>
+    	// But because the git changeset doesn't return an order list (only a HashSet)
+    	// it is not possible to get correct index for the file inside the changeset.
+    	// see https://github.com/jenkinsci/git-plugin/blob/master/src/main/java/hudson/plugins/git/GitChangeSet.java#L57
+    	    	
     	// Therefore a different URL pattern is used to show only the diff of a single file. 
     	// returns <url>"/changeset/"<changesetID>/<file>
-    	// The drawback is that the user has to navigate and not only to scroll to see other diffs.
+    	// The drawback is 'only' that the user has to navigate and not only to scroll to see other diffs.
     	
     	// Instead of https://fedorahosted.org/eclipse-fedorapackager/changeset/0956859f7db2656cae445488689a214c104bf1b3#file3
     	// e.g.       https://fedorahosted.org/eclipse-fedorapackager/changeset/0956859f7db2656cae445488689a214c104bf1b3/org.fedoraproject.eclipse.packager.rpm/src/org/fedoraproject/eclipse/packager/rpm/internal/handlers/SRPMImportHandler.java
@@ -64,7 +66,6 @@ public class TracGitRepositoryBrowser extends GitRepositoryBrowser {
         }
         return null;
     }
-
 
 	@Override
     public URL getFileLink(Path path) throws IOException {

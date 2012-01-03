@@ -17,6 +17,8 @@ import junit.framework.TestCase;
 import org.xml.sax.SAXException;
 
 /**
+ * Tests for TracGitRepositoryBrowser 
+ * 
  * @author Gerd Zanker (gerd.zanker@web.de)
  * 
  * Based on the ViewGetWeb code from
@@ -24,9 +26,17 @@ import org.xml.sax.SAXException;
  */
 public class TracGitRepositoryBrowserTest extends TestCase {
 
+	/** 
+	 * URL used for testing
+	 */
 	private static final String TRAC_URL = "https://trac";
-    private final TracGitRepositoryBrowser tracGitBrowser = new TracGitRepositoryBrowserMock();
-
+	
+    /**
+     * TracGitRepositoryBrowser instance used for testing.
+     * The getTracWebURL function is mocked to easily return the testing URL. 
+     */
+	private final TracGitRepositoryBrowser tracGitBrowser = new TracGitRepositoryBrowserMock();
+    
     /**
      * Mock implementation to return the test URL.
      */
@@ -57,8 +67,7 @@ public class TracGitRepositoryBrowserTest extends TestCase {
     /**
      * Test method for
      * {@link hudson.plugins.git.browser.TracGitBrowser#getDiffLink(hudson.plugins.git.GitChangeSet.Path)}.
-     * Test cases where links are tested, leading to the same changeset page as above, but using anchors.
-     * The anchors are the diff sections for each file inside the changeset.
+     * Test cases where links are tested, leading to the diff of the file from the same changeset page as above.
      * 
      * @throws SAXException
      * @throws IOException
@@ -123,7 +132,14 @@ public class TracGitRepositoryBrowserTest extends TestCase {
     }
     
     
-
+    /**
+     * Helper to create a changeset for testing.
+     * 
+     * @param rawchangelogpath
+     * @return
+     * @throws IOException
+     * @throws SAXException
+     */
     private GitChangeSet createChangeSet(String rawchangelogpath) throws IOException, SAXException {
         final File rawchangelog = new File(TracGitRepositoryBrowserTest.class.getResource(rawchangelogpath).getFile());
         final GitChangeLogParser logParser = new GitChangeLogParser(false);
@@ -132,6 +148,14 @@ public class TracGitRepositoryBrowserTest extends TestCase {
     }
 
 
+    /**
+     * Helper to create a map of paths.
+     * 
+     * @param changelog
+     * @return
+     * @throws IOException
+     * @throws SAXException
+     */
     private HashMap<String, Path> createPathMap(final String changelog) throws IOException, SAXException {
         final HashMap<String, Path> pathMap = new HashMap<String, Path>();
         final Collection<Path> changeSet = createChangeSet(changelog).getPaths();
