@@ -69,6 +69,11 @@
       <name>Jesse Farinacci</name>
       <email>jieryn@gmail.com</email>
     </developer>
+    <developer>
+      <id>gerd_zanker</id>
+      <name>Gerd Zanker</name>
+      <email>gerd.zanker@googlemail.com</email>
+    </developer>
   </developers>
 
   <scm>
