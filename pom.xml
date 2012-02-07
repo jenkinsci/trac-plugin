@@ -168,6 +168,7 @@
       <groupId>org.jenkinsci.plugins</groupId>
       <artifactId>git</artifactId>
       <version>1.1.14</version>
+      <optional>true</optional>
     </dependency>
   </dependencies>
 

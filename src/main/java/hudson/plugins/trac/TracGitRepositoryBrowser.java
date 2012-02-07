@@ -3,6 +3,7 @@ package hudson.plugins.trac;
 import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.model.Descriptor;
+import hudson.model.Hudson;
 import hudson.plugins.git.GitChangeSet;
 import hudson.plugins.git.GitChangeSet.Path;
 import hudson.plugins.git.browser.GitRepositoryBrowser;
@@ -91,10 +92,10 @@ public class TracGitRepositoryBrowser extends GitRepositoryBrowser {
 
     
     
-    @Extension
+    @Extension(optional = true)
     public static final class DescriptorImpl extends Descriptor<RepositoryBrowser<?>> {
         public DescriptorImpl() {
-            super(TracGitRepositoryBrowser.class);
+        	super();
         }
 
         public String getDisplayName() {
