@@ -35,7 +35,7 @@
   </parent>
 
   <artifactId>trac</artifactId>
-  <version>1.13-SNAPSHOT</version>
+  <version>1.13</version>
   <packaging>hpi</packaging>
 
   <name>Edgewall Trac Plugin</name>
