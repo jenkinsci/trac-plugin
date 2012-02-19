@@ -1,6 +1,5 @@
 package hudson.plugins.trac;
 
-import static org.junit.Assert.*;
 import hudson.plugins.git.GitChangeLogParser;
 import hudson.plugins.git.GitChangeSet;
 import hudson.plugins.git.GitChangeSet.Path;
@@ -8,13 +7,13 @@ import hudson.plugins.git.GitChangeSet.Path;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import org.junit.Test;
+import junit.framework.TestCase;
+
 import org.xml.sax.SAXException;
 
 /**
@@ -25,14 +24,16 @@ import org.xml.sax.SAXException;
  * Based on the ViewGetWeb code from
  * @author Paul Nyheim (paul.nyheim@gmail.com)
  */
-public class TracGitRepositoryBrowserTest {
+public class TracGitRepositoryBrowserStripFromPathTest extends TestCase {
 
 	/** 
-	 * URL used for testing
+	 * URLs used for testing
 	 */
 	private static final String TRAC_URL = "https://trac";
+	private static final String STRIP_FROM_PATH = "src/";
 	
-    /**
+
+	/**
      * TracGitRepositoryBrowser instance used for testing.
      * The getTracWebURL function is mocked to easily return the testing URL. 
      */
@@ -46,7 +47,7 @@ public class TracGitRepositoryBrowserTest {
 
 		@Override
 		protected TracProjectProperty getTracProjectProperty(GitChangeSet changeSet) {
-			return new TracProjectProperty(TRAC_URL, null, null);
+			return new TracProjectProperty(TRAC_URL, STRIP_FROM_PATH, null);
 	    }
 	}
 
@@ -60,7 +61,6 @@ public class TracGitRepositoryBrowserTest {
      * @throws SAXException
      * @throws IOException
      */
-    @Test
     public void testGetChangeSetLinkGitChangeSet() throws IOException, SAXException {
         final URL changeSetLink = tracGitBrowser.getChangeSetLink(createChangeSet("rawchangelog"));
         assertEquals(TRAC_URL+"/changeset/396fc230a3db05c427737aa5c2eb7856ba72b05d", changeSetLink.toString());
@@ -74,13 +74,12 @@ public class TracGitRepositoryBrowserTest {
      * @throws SAXException
      * @throws IOException
      */
-    @Test
     public void testGetDiffLinkPath() throws IOException, SAXException {
         final HashMap<String, Path> pathMap = createPathMap("rawchangelog");
         final Path path1 = pathMap.get("src/main/java/hudson/plugins/git/browser/GithubWeb.java");
-        assertEquals(TRAC_URL + "/changeset/396fc230a3db05c427737aa5c2eb7856ba72b05d/src/main/java/hudson/plugins/git/browser/GithubWeb.java", tracGitBrowser.getDiffLink(path1).toString());
+        assertEquals(TRAC_URL + "/changeset/396fc230a3db05c427737aa5c2eb7856ba72b05d/main/java/hudson/plugins/git/browser/GithubWeb.java", tracGitBrowser.getDiffLink(path1).toString());
         final Path path2 = pathMap.get("src/test/java/hudson/plugins/git/browser/GithubWebTest.java");
-        assertEquals(TRAC_URL + "/changeset/396fc230a3db05c427737aa5c2eb7856ba72b05d/src/test/java/hudson/plugins/git/browser/GithubWebTest.java", tracGitBrowser.getDiffLink(path2).toString());
+        assertEquals(TRAC_URL + "/changeset/396fc230a3db05c427737aa5c2eb7856ba72b05d/test/java/hudson/plugins/git/browser/GithubWebTest.java", tracGitBrowser.getDiffLink(path2).toString());
         final Path path3 = pathMap.get("src/test/resources/hudson/plugins/git/browser/rawchangelog-with-deleted-file");
         assertNull("Do not return a diff link for added files.", tracGitBrowser.getDiffLink(path3));
     }
@@ -94,8 +93,7 @@ public class TracGitRepositoryBrowserTest {
      * @throws SAXException
      * @throws IOException
      */
-    @Test
-    public void testGetDiffLinkForDeletedFile() throws Exception{
+   public void testGetDiffLinkForDeletedFile() throws Exception{
         final HashMap<String, Path> pathMap = createPathMap("rawchangelog-with-deleted-file");
         final Path path = pathMap.get("bar");
         assertNull("Do not return a diff link for deleted files.", tracGitBrowser.getDiffLink(path));
@@ -110,12 +108,11 @@ public class TracGitRepositoryBrowserTest {
      * @throws SAXException
      * @throws IOException
      */
-    @Test
     public void testGetFileLinkPath() throws IOException, SAXException {
         final HashMap<String, Path> pathMap = createPathMap("rawchangelog");
         final Path path = pathMap.get("src/main/java/hudson/plugins/git/browser/GithubWeb.java");
         final URL fileLink = tracGitBrowser.getFileLink(path);
-        assertEquals(TRAC_URL + "/browser/src/main/java/hudson/plugins/git/browser/GithubWeb.java?rev=396fc230a3db05c427737aa5c2eb7856ba72b05d",
+        assertEquals(TRAC_URL + "/browser/main/java/hudson/plugins/git/browser/GithubWeb.java?rev=396fc230a3db05c427737aa5c2eb7856ba72b05d",
                 String.valueOf(fileLink));
     }
     
@@ -129,7 +126,6 @@ public class TracGitRepositoryBrowserTest {
      * @throws SAXException
      * @throws IOException
      */
-    @Test
     public void testGetFileLinkPathForDeletedFile() throws IOException, SAXException {
         final HashMap<String, Path> pathMap = createPathMap("rawchangelog-with-deleted-file");
         final Path path = pathMap.get("bar");
@@ -147,12 +143,7 @@ public class TracGitRepositoryBrowserTest {
      * @throws SAXException
      */
     private GitChangeSet createChangeSet(String rawchangelogpath) throws IOException, SAXException {
-        File rawchangelog = null;
-		try {
-			rawchangelog = new File(this.getClass().getResource(rawchangelogpath).toURI());
-		} catch (URISyntaxException e) {
-			fail("Resource '"+rawchangelogpath+"' not found in test");
-		}
+        final File rawchangelog = new File(TracGitRepositoryBrowserStripFromPathTest.class.getResource(rawchangelogpath).getFile());
         final GitChangeLogParser logParser = new GitChangeLogParser(false);
         final List<GitChangeSet> changeSetList = logParser.parse(null, rawchangelog).getLogs();
         return changeSetList.get(0);

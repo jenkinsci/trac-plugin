@@ -22,11 +22,7 @@ public class TracRepositoryBrowser extends SubversionRepositoryBrowser {
     public TracRepositoryBrowser() {
     }
 
-    /**
-     * Access the Trac ProjectProperty via the changeset.
-	 * This function is protected to allow the test to override it
-	 * and implement a Mock getTracWebURL function to make tests easy.
-	 */
+
     protected TracProjectProperty getTracProjectProperty(LogEntry changeSet) {
     	AbstractProject<?,?> p = (AbstractProject<?,?>)changeSet.getParent().build.getProject();
     	return p.getProperty(TracProjectProperty.class);
@@ -44,8 +40,16 @@ public class TracRepositoryBrowser extends SubversionRepositoryBrowser {
         else
         	return new URL(tpp.tracWebsite);
     }
- 
 
+    private String getPath(Path path) {
+        String pathValue = path.getValue();
+        TracProjectProperty tpp = getTracProjectProperty(path.getLogEntry());
+        if(tpp != null && tpp.tracStrippedFromChangesetPath != null && pathValue != null
+            && pathValue.startsWith(tpp.tracStrippedFromChangesetPath))
+            return pathValue.substring(tpp.tracStrippedFromChangesetPath.length());
+        else
+            return pathValue;
+    }
 
     @Override
     public URL getDiffLink(Path path) throws IOException {
@@ -53,13 +57,13 @@ public class TracRepositoryBrowser extends SubversionRepositoryBrowser {
             return null;    // no diff if this is not an edit change
         URL baseUrl = getTracWebURL(path.getLogEntry());
         int revision = path.getLogEntry().getRevision();
-        return new URL(baseUrl, "changeset/" + revision + path.getValue() + "#file0");
+        return new URL(baseUrl, "changeset/" + revision + getPath(path) + "#file0");
     }
 
     @Override
     public URL getFileLink(Path path) throws IOException {
         URL baseUrl = getTracWebURL(path.getLogEntry());
-        return baseUrl == null ? null : new URL(baseUrl, "browser" + path.getValue() + "#L1");
+        return baseUrl == null ? null : new URL(baseUrl, "browser" + getPath(path) + "#L1");
     }
 
     @Override
