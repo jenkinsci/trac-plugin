@@ -1,19 +1,22 @@
 package hudson.plugins.trac;
 
+import org.junit.Test;
+
 import hudson.MarkupText;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
-
-public class TracLinkAnnotatorTest extends TestCase {
+public class TracLinkAnnotatorTest  {
 
     private static final String TRAC_URL = "http://trac/";
 
+    @Test
     public void testWikiLinkSyntax() {
         assertAnnotatedTextEquals("Nothing here.", "Nothing here.");
         assertAnnotatedTextEquals("Text with WikiLink.", "Text with <a href='" + TRAC_URL + "wiki/WikiLink'>WikiLink</a>.");
     }
 
+    @Test
     public void testTicketLinkSyntax() {
         assertAnnotatedTextEquals("Text with ticket #123 link",
                 "Text with ticket <a href='" + TRAC_URL + "ticket/123'>#123</a> link");
@@ -21,6 +24,7 @@ public class TracLinkAnnotatorTest extends TestCase {
                 "<a href='" + TRAC_URL + "ticket/123'>#123</a>");
     }
 
+    @Test
     public void testInterTracShortTicketLinkSyntax() {
         assertAnnotatedTextEquals("Text with #T123 link",
                 "Text with <a href='" + TRAC_URL + "search?q=%23T123'>#T123</a> link");
@@ -28,6 +32,7 @@ public class TracLinkAnnotatorTest extends TestCase {
                 "<a href='" + TRAC_URL + "search?q=%23T123'>#T123</a>");
     }
 
+    @Test
     public void testInterTracMediumTicketLinkSyntax() {
         assertAnnotatedTextEquals("Text with trac:#123 link",
                 "Text with <a href='" + TRAC_URL + "search?q=trac%3A%23123'>trac:#123</a> link");
@@ -35,6 +40,7 @@ public class TracLinkAnnotatorTest extends TestCase {
                 "<a href='" + TRAC_URL + "search?q=trac%3A%23123'>trac:#123</a>");
     }
 
+    @Test
     public void testInterTracFullTicketLinkSyntax() {
         assertAnnotatedTextEquals("Text with trac:ticket:123 link",
                 "Text with <a href='" + TRAC_URL + "search?q=trac%3Aticket%3A123'>trac:ticket:123</a> link");
@@ -42,6 +48,7 @@ public class TracLinkAnnotatorTest extends TestCase {
                 "<a href='" + TRAC_URL + "search?q=trac%3Aticket%3A123'>trac:ticket:123</a>");
     }
 
+    @Test
     public void testInterTracShortChangesetLinkSyntax() {
         assertAnnotatedTextEquals("Text with [T123] link",
                 "Text with <a href='" + TRAC_URL + "search?q=%5BT123%5D'>[T123]</a> link");
@@ -49,6 +56,7 @@ public class TracLinkAnnotatorTest extends TestCase {
                 "<a href='" + TRAC_URL + "search?q=%5BT123%5D'>[T123]</a>");
     }
 
+    @Test
     public void testInterTracFullChangesetLinkSyntax() {
         assertAnnotatedTextEquals("Text with trac:changeset:123 link",
                 "Text with <a href='" + TRAC_URL + "search?q=trac%3Achangeset%3A123'>trac:changeset:123</a> link");
@@ -56,6 +64,7 @@ public class TracLinkAnnotatorTest extends TestCase {
                 "<a href='" + TRAC_URL + "search?q=trac%3Achangeset%3A123'>trac:changeset:123</a>");
     }
 
+    @Test
     public void testInterTracFullWikiLinkSyntax() {
         assertAnnotatedTextEquals("Text with trac:wiki:PageName link",
                 "Text with <a href='" + TRAC_URL + "search?q=trac%3Awiki%3APageName'>trac:wiki:PageName</a> link");
@@ -63,6 +72,7 @@ public class TracLinkAnnotatorTest extends TestCase {
                 "<a href='" + TRAC_URL + "search?q=trac%3Awiki%3APageName'>trac:wiki:PageName</a>");
     }
 
+    @Test
     public void testMultipleLinks() {
         String ticketUrl = "<a href='" + TRAC_URL + "ticket/101'>#101</a>";
         String changesetUrl = "<a href='" + TRAC_URL + "changeset/303'>[303]</a>";
