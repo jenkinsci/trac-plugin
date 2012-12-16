@@ -252,11 +252,6 @@
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${maven-surefire-plugin.version}</version>
-          <configuration>
-            <parallel>methods</parallel>
-            <testFailureIgnore>true</testFailureIgnore>
-            <threadCount>4</threadCount>
-          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>

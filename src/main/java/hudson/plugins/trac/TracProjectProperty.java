@@ -1,5 +1,8 @@
 package hudson.plugins.trac;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.model.Job;
@@ -38,8 +41,8 @@ public final class TracProjectProperty extends JobProperty<AbstractProject<?,?>>
     }
 
     @Override
-    public Action getJobAction(AbstractProject<?,?> job) {
-        return new TracLinkAction(this);
+    public Collection<? extends Action> getJobActions(AbstractProject<?,?> job) {
+        return Collections.singletonList(new TracLinkAction(this));
     }
 
     @Extension
