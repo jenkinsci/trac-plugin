@@ -85,6 +85,6 @@ public class TracLinkAnnotatorTest  {
         TracLinkAnnotator annotator = new TracLinkAnnotator();
         annotator.annotate(TRAC_URL, markupText);
 
-        assertEquals(expectedAnnotatedText, markupText.toString());
+        assertEquals(expectedAnnotatedText, markupText.toString(false));
     }
 }
