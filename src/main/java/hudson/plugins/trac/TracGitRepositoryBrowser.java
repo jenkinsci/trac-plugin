@@ -10,6 +10,7 @@ import hudson.plugins.git.browser.GitRepositoryBrowser;
 import hudson.scm.ChangeLogSet;
 import hudson.scm.EditType;
 import hudson.scm.RepositoryBrowser;
+import hudson.scm.SubversionChangeLogSet.LogEntry;
 import hudson.scm.browsers.QueryBuilder;
 
 import java.io.IOException;
@@ -32,22 +33,51 @@ public class TracGitRepositoryBrowser extends GitRepositoryBrowser {
     }
 
     /**
+     * Access the Trac ProjectProperty via the changeset.
+	 * This function is protected to allow the test to override it
+	 * and implement a Mock getTracWebURL function to make tests easy.
+	 */
+    protected TracProjectProperty getTracProjectProperty(GitChangeSet changeSet) {
+       	ChangeLogSet<?> cs = changeSet.getParent();
+        AbstractProject<?,?> p = (AbstractProject<?,?>)cs.build.getProject();
+        return p.getProperty(TracProjectProperty.class);
+    }
+
+    /**
      * Gets a URL for the {@link TracProjectProperty#tracWebsite} value
      * configured for the current project.
-     * 
-     * This function is protected to allow the test to override it
-     * and implement a Mock getTracWebURL function to make tests easy.
-     */
-    protected URL getTracWebURL(GitChangeSet changeSet) throws MalformedURLException {
-    	ChangeLogSet<?> cs = changeSet.getParent();
-        AbstractProject<?,?> p = (AbstractProject<?,?>)cs.build.getProject();
-        TracProjectProperty tpp = p.getProperty(TracProjectProperty.class);
+     */ 
+    private URL getTracWebURL(GitChangeSet changeSet) throws MalformedURLException {
+    	TracProjectProperty tpp = getTracProjectProperty(changeSet);
         if(tpp==null)   
         	return null;
         else
         	return new URL(tpp.tracWebsite);
-    }
+    }    
+    
+    /**
+     * Gets the String from {@link TracProjectProperty#tracWebsite} 
+	 * which will be appended to the browser URL.
+     * See JENKINS-13366
+     */
+    private String getTracAppendToBrowserURL(GitChangeSet changeSet)  {
+    	TracProjectProperty tpp = getTracProjectProperty(changeSet);
+        if(tpp==null || tpp.tracAppendedToBrowserURL==null)   
+        	return "";
+        else
+        	return tpp.tracAppendedToBrowserURL;
+    }    
 
+    private String getPath(Path path) {
+        String pathValue = path.getPath();
+        TracProjectProperty tpp = getTracProjectProperty(path.getChangeSet());
+        if(tpp != null && tpp.tracStrippedFromChangesetPath != null && pathValue != null
+            && pathValue.startsWith(tpp.tracStrippedFromChangesetPath))
+            return pathValue.substring(tpp.tracStrippedFromChangesetPath.length());
+        else
+            return pathValue;
+    }    
+    
     @Override
     public URL getDiffLink(Path path) throws IOException {
     	// Normally the diffs of a changeset are shown on one single Trac HTML page 
@@ -63,7 +93,7 @@ public class TracGitRepositoryBrowser extends GitRepositoryBrowser {
     	// Instead of https://fedorahosted.org/eclipse-fedorapackager/changeset/0956859f7db2656cae445488689a214c104bf1b3#file3
     	// e.g.       https://fedorahosted.org/eclipse-fedorapackager/changeset/0956859f7db2656cae445488689a214c104bf1b3/org.fedoraproject.eclipse.packager.rpm/src/org/fedoraproject/eclipse/packager/rpm/internal/handlers/SRPMImportHandler.java
         if (path.getEditType() == EditType.EDIT) {
-        	return new URL(getTracWebURL(path.getChangeSet()), getChangeSetLink(path.getChangeSet()).toString() + "/" + path.getPath() );            
+        	return new URL(getTracWebURL(path.getChangeSet()), getChangeSetLink(path.getChangeSet()).toString() + "/" + getPath(path) );            
         }
         return null;
     }
@@ -79,7 +109,7 @@ public class TracGitRepositoryBrowser extends GitRepositoryBrowser {
         } else {
         	spec = new QueryBuilder(url.getQuery()).add("rev="+path.getChangeSet().getId()).toString();
         }
-        return new URL(url, url.getPath() + "browser/" + path.getPath() + spec);
+        return new URL(url, url.getPath() + "browser/" + getTracAppendToBrowserURL(path.getChangeSet()) + getPath(path) + spec);
     }
 
     @Override

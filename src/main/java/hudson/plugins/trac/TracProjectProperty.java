@@ -28,8 +28,26 @@ public final class TracProjectProperty extends JobProperty<AbstractProject<?,?>>
      */
     public final String tracWebsite;
 
-    @DataBoundConstructor
+    /**
+     * Stripped from the source code changeset path before the path is appended.
+     * Null if this is not configured yet.
+     */
+    public final String tracStrippedFromChangesetPath;
+
+    /**
+     * Appended to the Trac's source code browser URL before the path.
+     * Null if this is not configured yet.
+     */
+    public final String tracAppendedToBrowserURL;
+
+    
+    @Deprecated
     public TracProjectProperty(String tracWebsite) {
+        this(tracWebsite, null, null);
+    }
+
+    @DataBoundConstructor
+    public TracProjectProperty(String tracWebsite, String tracStrippedFromChangesetPath, String tracAppendedToBrowserURL) {
         // normalize
         if(tracWebsite==null || tracWebsite.length()==0)
             tracWebsite=null;
@@ -37,7 +55,17 @@ public final class TracProjectProperty extends JobProperty<AbstractProject<?,?>>
             if(!tracWebsite.endsWith("/"))
                 tracWebsite += '/';
         }
+        if(tracStrippedFromChangesetPath==null || tracStrippedFromChangesetPath.length()==0)
+        	tracStrippedFromChangesetPath=null;
+        if(tracAppendedToBrowserURL==null || tracAppendedToBrowserURL.length()==0)
+        	tracAppendedToBrowserURL=null;
+        else {
+            if(!tracAppendedToBrowserURL.endsWith("/"))
+            	tracAppendedToBrowserURL += '/';
+        }
         this.tracWebsite = tracWebsite;
+        this.tracStrippedFromChangesetPath = tracStrippedFromChangesetPath;
+        this.tracAppendedToBrowserURL = tracAppendedToBrowserURL;
     }
 
     @Override

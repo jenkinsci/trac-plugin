@@ -13,23 +13,27 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 
 /**
- * Tests for TracRepositoryBrowser 
+ * Tests for TracGitRepositoryBrowser 
  * 
  * @author Gerd Zanker (gerd.zanker@web.de)
  * 
+ * Based on the ViewGetWeb code from
+ * @author Paul Nyheim (paul.nyheim@gmail.com)
  */
-public class TracSvnRepositoryBrowserTest {
+public class TracSvnRepositoryBrowserStripFromPathTest {
 
 	/** 
-	 * URL used for testing
+	 * URLs used for testing
 	 */
 	private static final String TRAC_URL = "https://trac";
+	private static final String STRIP_FROM_PATH = "/src";
 	
-    /**
+
+	/**
      * TracGitRepositoryBrowser instance used for testing.
      * The getTracWebURL function is mocked to easily return the testing URL. 
      */
-	private final TracRepositoryBrowser tracSvnBrowser = new TracSvnRepositoryBrowserMock();
+	private final TracRepositoryBrowser tracGitBrowser = new TracSvnRepositoryBrowserMock();
     
     /**
      * Mock implementation to return the test URL.
@@ -39,7 +43,7 @@ public class TracSvnRepositoryBrowserTest {
 
 		@Override
 		protected TracProjectProperty getTracProjectProperty(LogEntry changeSet) {
-			return new TracProjectProperty(TRAC_URL, null, null);
+			return new TracProjectProperty(TRAC_URL, STRIP_FROM_PATH, null);
 	    }
 	}
 
@@ -54,8 +58,8 @@ public class TracSvnRepositoryBrowserTest {
      * @throws IOException
      */
     @Test
-    public void testGetChangeSetLinkSvnChangeSet() throws IOException, SAXException {
-        final URL changeSetLink = tracSvnBrowser.getChangeSetLink(TracSvnHelper.createChangeSet("changelog_unsorted.xml"));
+    public void testGetChangeSetLinkGitChangeSet() throws IOException, SAXException {
+        final URL changeSetLink = tracGitBrowser.getChangeSetLink(TracSvnHelper.createChangeSet("changelog_unsorted.xml"));
         assertEquals(TRAC_URL+"/changeset/68100", changeSetLink.toString());
     }
 
@@ -71,11 +75,11 @@ public class TracSvnRepositoryBrowserTest {
     public void testGetDiffLinkPath() throws IOException, SAXException {
         final HashMap<String, Path> pathMap = TracSvnHelper.createPathMap("changelog_unsorted.xml");
         final Path path1 = pathMap.get("/src/main/java/hudson/plugins/git/browser/GithubWeb.java");
-        assertEquals(TRAC_URL + "/changeset/68100/src/main/java/hudson/plugins/git/browser/GithubWeb.java#file0", tracSvnBrowser.getDiffLink(path1).toString());
+        assertEquals(TRAC_URL + "/changeset/68100/main/java/hudson/plugins/git/browser/GithubWeb.java#file0", tracGitBrowser.getDiffLink(path1).toString());
         final Path path2 = pathMap.get("/src/test/java/hudson/plugins/git/browser/GithubWebTest.java");
-        assertEquals(TRAC_URL + "/changeset/68100/src/test/java/hudson/plugins/git/browser/GithubWebTest.java#file0", tracSvnBrowser.getDiffLink(path2).toString());
+        assertEquals(TRAC_URL + "/changeset/68100/test/java/hudson/plugins/git/browser/GithubWebTest.java#file0", tracGitBrowser.getDiffLink(path2).toString());
         final Path path3 = pathMap.get("/src/test/resources/hudson/plugins/git/browser/rawchangelog-with-deleted-file");
-        assertNull("Do not return a diff link for added files.", tracSvnBrowser.getDiffLink(path3));
+        assertNull("Do not return a diff link for added files.", tracGitBrowser.getDiffLink(path3));
     }
 
     /**
@@ -91,7 +95,7 @@ public class TracSvnRepositoryBrowserTest {
     public void testGetDiffLinkForDeletedFile() throws Exception{
         final HashMap<String, Path> pathMap = TracSvnHelper.createPathMap("changelog-with-deleted-file.xml");
         final Path path = pathMap.get("/bar");
-        assertNull("Do not return a diff link for deleted files.", tracSvnBrowser.getDiffLink(path));
+        assertNull("Do not return a diff link for deleted files.", tracGitBrowser.getDiffLink(path));
 
     }
     
@@ -107,8 +111,8 @@ public class TracSvnRepositoryBrowserTest {
     public void testGetFileLinkPath() throws IOException, SAXException {
         final HashMap<String, Path> pathMap = TracSvnHelper.createPathMap("changelog_unsorted.xml");
         final Path path = pathMap.get("/src/main/java/hudson/plugins/git/browser/GithubWeb.java");
-        final URL fileLink = tracSvnBrowser.getFileLink(path);
-        assertEquals(TRAC_URL + "/browser/src/main/java/hudson/plugins/git/browser/GithubWeb.java#L1",
+        final URL fileLink = tracGitBrowser.getFileLink(path);
+        assertEquals(TRAC_URL + "/browser/main/java/hudson/plugins/git/browser/GithubWeb.java#L1",
                 String.valueOf(fileLink));
     }
     
@@ -126,11 +130,8 @@ public class TracSvnRepositoryBrowserTest {
     public void testGetFileLinkPathForDeletedFile() throws IOException, SAXException {
         final HashMap<String, Path> pathMap = TracSvnHelper.createPathMap("changelog-with-deleted-file.xml");
         final Path path = pathMap.get("/bar");
-        final URL fileLink = tracSvnBrowser.getFileLink(path);
+        final URL fileLink = tracGitBrowser.getFileLink(path);
         assertEquals(TRAC_URL + "/browser/bar#L1", String.valueOf(fileLink));
     }
     
-    
-
-
 }
