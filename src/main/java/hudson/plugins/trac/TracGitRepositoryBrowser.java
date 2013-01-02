@@ -58,7 +58,7 @@ public class TracGitRepositoryBrowser extends GitRepositoryBrowser {
     /**
      * Gets the String from {@link TracProjectProperty#tracWebsite} 
 	 * which will be appended to the browser URL.
-     * See JENKINS-11887
+     * See JENKINS-13366
      */
     private String getTracAppendToBrowserURL(GitChangeSet changeSet)  {
     	TracProjectProperty tpp = getTracProjectProperty(changeSet);

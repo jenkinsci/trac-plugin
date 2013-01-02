@@ -3,6 +3,7 @@ package hudson.plugins.trac;
 import hudson.Extension;
 import hudson.model.Descriptor;
 import hudson.model.AbstractProject;
+import hudson.plugins.git.GitChangeSet;
 import hudson.scm.EditType;
 import hudson.scm.RepositoryBrowser;
 import hudson.scm.SubversionChangeLogSet.LogEntry;
@@ -41,6 +42,25 @@ public class TracRepositoryBrowser extends SubversionRepositoryBrowser {
         	return new URL(tpp.tracWebsite);
     }
 
+    /**
+     * Gets the String from {@link TracProjectProperty#tracWebsite} 
+	 * which will be appended to the browser URL.
+     * See JENKINS-13366
+     */
+    private String getTracAppendToBrowserURL(LogEntry changeSet)  {
+    	TracProjectProperty tpp = getTracProjectProperty(changeSet);
+        if(tpp==null || tpp.tracAppendedToBrowserURL==null)   
+        	return "";
+        else {
+        	// remove ending slash, because SVN paths always start with a slash
+        	String appendStr = tpp.tracAppendedToBrowserURL;
+        	if(appendStr.endsWith("/"))
+        		return "/" + appendStr.substring(0, appendStr.length()-1);
+        	else 
+        		return "/" + appendStr;
+        }
+    }
+    
     private String getPath(Path path) {
         String pathValue = path.getValue();
         TracProjectProperty tpp = getTracProjectProperty(path.getLogEntry());
@@ -63,7 +83,7 @@ public class TracRepositoryBrowser extends SubversionRepositoryBrowser {
     @Override
     public URL getFileLink(Path path) throws IOException {
         URL baseUrl = getTracWebURL(path.getLogEntry());
-        return baseUrl == null ? null : new URL(baseUrl, "browser" + getPath(path) + "#L1");
+        return baseUrl == null ? null : new URL(baseUrl, "browser" + getTracAppendToBrowserURL(path.getLogEntry()) + getPath(path) + "#L1");
     }
 
     @Override

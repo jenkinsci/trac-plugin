@@ -3,10 +3,10 @@
     <f:textbox name="trac.tracWebsite" value="${instance.tracWebsite}" />
   </f:entry>
   <f:advanced>
-    <f:entry title="Part removed from the path of the Trac source repository browser URL" help="/plugin/trac/help-StripFromPath.html">
-      <f:textbox name="trac.tracStrippedFromChangesetPath" value="${instance.tracStrippedFromChangesetPath}" />
+    <f:entry field="tracStrippedFromChangesetPath" title="Part removed from the path of the Trac source repository browser URL">
+      <f:textbox/>
     </f:entry>
-    <f:entry field="tracAppendedToBrowserURL" title="Part added to the Trac source repository browser URL">
+    <f:entry field="tracAppendedToBrowserURL" title="Part appended to the Trac source repository browser URL">
       <f:textbox/>
     </f:entry>
   </f:advanced>

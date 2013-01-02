@@ -2,20 +2,12 @@ package hudson.plugins.trac;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-import hudson.plugins.git.GitChangeSet;
 import hudson.scm.SubversionChangeLogSet.LogEntry;
 import hudson.scm.SubversionChangeLogSet.Path;
-import hudson.scm.SubversionChangeLogParser;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -47,7 +39,7 @@ public class TracSvnRepositoryBrowserTest {
 
 		@Override
 		protected TracProjectProperty getTracProjectProperty(LogEntry changeSet) {
-			return new TracProjectProperty(TRAC_URL);
+			return new TracProjectProperty(TRAC_URL, null, null);
 	    }
 	}
 
@@ -63,7 +55,7 @@ public class TracSvnRepositoryBrowserTest {
      */
     @Test
     public void testGetChangeSetLinkSvnChangeSet() throws IOException, SAXException {
-        final URL changeSetLink = tracSvnBrowser.getChangeSetLink(createChangeSet("changelog_unsorted.xml"));
+        final URL changeSetLink = tracSvnBrowser.getChangeSetLink(TracSvnHelper.createChangeSet("changelog_unsorted.xml"));
         assertEquals(TRAC_URL+"/changeset/68100", changeSetLink.toString());
     }
 
@@ -77,7 +69,7 @@ public class TracSvnRepositoryBrowserTest {
      */
     @Test
     public void testGetDiffLinkPath() throws IOException, SAXException {
-        final HashMap<String, Path> pathMap = createPathMap("changelog_unsorted.xml");
+        final HashMap<String, Path> pathMap = TracSvnHelper.createPathMap("changelog_unsorted.xml");
         final Path path1 = pathMap.get("/src/main/java/hudson/plugins/git/browser/GithubWeb.java");
         assertEquals(TRAC_URL + "/changeset/68100/src/main/java/hudson/plugins/git/browser/GithubWeb.java#file0", tracSvnBrowser.getDiffLink(path1).toString());
         final Path path2 = pathMap.get("/src/test/java/hudson/plugins/git/browser/GithubWebTest.java");
@@ -97,7 +89,7 @@ public class TracSvnRepositoryBrowserTest {
      */
     @Test
     public void testGetDiffLinkForDeletedFile() throws Exception{
-        final HashMap<String, Path> pathMap = createPathMap("changelog-with-deleted-file.xml");
+        final HashMap<String, Path> pathMap = TracSvnHelper.createPathMap("changelog-with-deleted-file.xml");
         final Path path = pathMap.get("/bar");
         assertNull("Do not return a diff link for deleted files.", tracSvnBrowser.getDiffLink(path));
 
@@ -113,7 +105,7 @@ public class TracSvnRepositoryBrowserTest {
      */
     @Test
     public void testGetFileLinkPath() throws IOException, SAXException {
-        final HashMap<String, Path> pathMap = createPathMap("changelog_unsorted.xml");
+        final HashMap<String, Path> pathMap = TracSvnHelper.createPathMap("changelog_unsorted.xml");
         final Path path = pathMap.get("/src/main/java/hudson/plugins/git/browser/GithubWeb.java");
         final URL fileLink = tracSvnBrowser.getFileLink(path);
         assertEquals(TRAC_URL + "/browser/src/main/java/hudson/plugins/git/browser/GithubWeb.java#L1",
@@ -132,49 +124,13 @@ public class TracSvnRepositoryBrowserTest {
      */
     @Test
     public void testGetFileLinkPathForDeletedFile() throws IOException, SAXException {
-        final HashMap<String, Path> pathMap = createPathMap("changelog-with-deleted-file.xml");
+        final HashMap<String, Path> pathMap = TracSvnHelper.createPathMap("changelog-with-deleted-file.xml");
         final Path path = pathMap.get("/bar");
         final URL fileLink = tracSvnBrowser.getFileLink(path);
         assertEquals(TRAC_URL + "/browser/bar#L1", String.valueOf(fileLink));
     }
     
     
-    /**
-     * Helper to create a LogEntry for testing.
-     * 
-     * @param rawchangelogpath
-     * @return
-     * @throws IOException
-     * @throws SAXException
-     */
-    private LogEntry createChangeSet(String rawchangelogpath) throws IOException, SAXException {
-        File rawchangelog = null;
-		try {
-			rawchangelog = new File(this.getClass().getResource(rawchangelogpath).toURI());
-		} catch (URISyntaxException e) {
-			fail("Resource '"+rawchangelogpath+"' not found in test");
-		}
-        final SubversionChangeLogParser logParser = new SubversionChangeLogParser();
-        final List<LogEntry> changeSetList = logParser.parse(null, rawchangelog).getLogs();
-        return changeSetList.get(0);
-    }
 
-
-    /**
-     * Helper to create a map of paths.
-     * 
-     * @param changelog
-     * @return
-     * @throws IOException
-     * @throws SAXException
-     */
-    private HashMap<String, Path> createPathMap(final String changelog) throws IOException, SAXException {
-        final HashMap<String, Path> pathMap = new HashMap<String, Path>();
-        final Collection<Path> changeSet = createChangeSet(changelog).getPaths();
-        for (final Path path : changeSet) {
-            pathMap.put(path.getPath(), path);
-        }
-        return pathMap;
-    }
 
 }

@@ -1,16 +1,13 @@
 package hudson.plugins.trac;
 
-import static org.junit.Assert.*;
-import hudson.plugins.git.GitChangeLogParser;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import hudson.plugins.git.GitChangeSet;
 import hudson.plugins.git.GitChangeSet.Path;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -61,7 +58,7 @@ public class TracGitRepositoryBrowserAppendToTracURLTest {
      */
     @Test
     public void testGetChangeSetLinkGitChangeSet() throws IOException, SAXException {
-        final URL changeSetLink = tracGitBrowser.getChangeSetLink(createChangeSet("rawchangelog"));
+        final URL changeSetLink = tracGitBrowser.getChangeSetLink(TracGitHelper.createChangeSet("rawchangelog"));
         assertEquals(TRAC_URL+"/changeset/396fc230a3db05c427737aa5c2eb7856ba72b05d", changeSetLink.toString());
     }
 
@@ -75,7 +72,7 @@ public class TracGitRepositoryBrowserAppendToTracURLTest {
      */
     @Test
     public void testGetDiffLinkPath() throws IOException, SAXException {
-        final HashMap<String, Path> pathMap = createPathMap("rawchangelog");
+        final HashMap<String, Path> pathMap = TracGitHelper.createPathMap("rawchangelog");
         final Path path1 = pathMap.get("src/main/java/hudson/plugins/git/browser/GithubWeb.java");
         assertEquals(TRAC_URL + "/changeset/396fc230a3db05c427737aa5c2eb7856ba72b05d/src/main/java/hudson/plugins/git/browser/GithubWeb.java", tracGitBrowser.getDiffLink(path1).toString());
         final Path path2 = pathMap.get("src/test/java/hudson/plugins/git/browser/GithubWebTest.java");
@@ -95,7 +92,7 @@ public class TracGitRepositoryBrowserAppendToTracURLTest {
      */
     @Test
     public void testGetDiffLinkForDeletedFile() throws Exception{
-        final HashMap<String, Path> pathMap = createPathMap("rawchangelog-with-deleted-file");
+        final HashMap<String, Path> pathMap = TracGitHelper.createPathMap("rawchangelog-with-deleted-file");
         final Path path = pathMap.get("bar");
         assertNull("Do not return a diff link for deleted files.", tracGitBrowser.getDiffLink(path));
 
@@ -111,7 +108,7 @@ public class TracGitRepositoryBrowserAppendToTracURLTest {
      */
     @Test
     public void testGetFileLinkPath() throws IOException, SAXException {
-        final HashMap<String, Path> pathMap = createPathMap("rawchangelog");
+        final HashMap<String, Path> pathMap = TracGitHelper.createPathMap("rawchangelog");
         final Path path = pathMap.get("src/main/java/hudson/plugins/git/browser/GithubWeb.java");
         final URL fileLink = tracGitBrowser.getFileLink(path);
         assertEquals(TRAC_URL + "/browser/" + APPEND_TO_URL + "src/main/java/hudson/plugins/git/browser/GithubWeb.java?rev=396fc230a3db05c427737aa5c2eb7856ba72b05d",
@@ -130,44 +127,10 @@ public class TracGitRepositoryBrowserAppendToTracURLTest {
      */
     @Test
     public void testGetFileLinkPathForDeletedFile() throws IOException, SAXException {
-        final HashMap<String, Path> pathMap = createPathMap("rawchangelog-with-deleted-file");
+        final HashMap<String, Path> pathMap = TracGitHelper.createPathMap("rawchangelog-with-deleted-file");
         final Path path = pathMap.get("bar");
         final URL fileLink = tracGitBrowser.getFileLink(path);
         assertEquals(TRAC_URL + "/browser/" + APPEND_TO_URL + "bar?rev=b547aa10c3f06710c6fdfcdb2a9149c81662923b", String.valueOf(fileLink));
-    }
-    
-    
-    /**
-     * Helper to create a changeset for testing.
-     * 
-     * @param rawchangelogpath
-     * @return
-     * @throws IOException
-     * @throws SAXException
-     */
-    private GitChangeSet createChangeSet(String rawchangelogpath) throws IOException, SAXException {
-        final File rawchangelog = new File(TracGitRepositoryBrowserAppendToTracURLTest.class.getResource(rawchangelogpath).getFile());
-        final GitChangeLogParser logParser = new GitChangeLogParser(false);
-        final List<GitChangeSet> changeSetList = logParser.parse(null, rawchangelog).getLogs();
-        return changeSetList.get(0);
-    }
-
-
-    /**
-     * Helper to create a map of paths.
-     * 
-     * @param changelog
-     * @return
-     * @throws IOException
-     * @throws SAXException
-     */
-    private HashMap<String, Path> createPathMap(final String changelog) throws IOException, SAXException {
-        final HashMap<String, Path> pathMap = new HashMap<String, Path>();
-        final Collection<Path> changeSet = createChangeSet(changelog).getPaths();
-        for (final Path path : changeSet) {
-            pathMap.put(path.getPath(), path);
-        }
-        return pathMap;
     }
 
 }
