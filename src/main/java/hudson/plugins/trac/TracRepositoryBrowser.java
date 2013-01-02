@@ -23,15 +23,29 @@ public class TracRepositoryBrowser extends SubversionRepositoryBrowser {
     }
 
     /**
+     * Access the Trac ProjectProperty via the changeset.
+	 * This function is protected to allow the test to override it
+	 * and implement a Mock getTracWebURL function to make tests easy.
+	 */
+    protected TracProjectProperty getTracProjectProperty(LogEntry changeSet) {
+    	AbstractProject<?,?> p = (AbstractProject<?,?>)changeSet.getParent().build.getProject();
+    	return p.getProperty(TracProjectProperty.class);
+    }
+
+    
+    /**
      * Gets a URL for the {@link TracProjectProperty#tracWebsite} value
      * configured for the current project.
      */
-    private URL getTracWebURL(LogEntry cs) throws MalformedURLException {
-        AbstractProject<?,?> p = (AbstractProject<?,?>)cs.getParent().build.getProject();
-        TracProjectProperty tpp = p.getProperty(TracProjectProperty.class);
-        if(tpp==null)   return null;
-        else            return new URL(tpp.tracWebsite);
+    private URL getTracWebURL(LogEntry changeSet) throws MalformedURLException {
+    	TracProjectProperty tpp = getTracProjectProperty(changeSet);
+        if(tpp==null)   
+        	return null;
+        else
+        	return new URL(tpp.tracWebsite);
     }
+ 
+
 
     @Override
     public URL getDiffLink(Path path) throws IOException {
