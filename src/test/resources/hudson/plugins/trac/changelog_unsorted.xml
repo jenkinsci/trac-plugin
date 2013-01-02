@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<log>
+    <logentry revision="68100">
+        <date>2011-07-14T15:25:09.982854Z</date>
+        <paths>
+            <path action="M">/src/main/java/hudson/plugins/git/browser/GithubWeb.java
+            </path>
+            <path action="M">/src/test/java/hudson/plugins/git/browser/GithubWebTest.java
+            </path>
+            <path action="A">/src/test/resources/hudson/plugins/git/browser/rawchangelog-with-deleted-file
+            </path>
+        </paths>
+        <msg>A commit
+            message</msg>
+    </logentry>
+</log> 

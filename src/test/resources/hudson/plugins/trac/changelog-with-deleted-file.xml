@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<log>
+    <logentry revision="68100">
+        <date>2011-07-14T15:25:09.982854Z</date>
+        <paths>
+            <path action="D">/bar
+            </path>
+        </paths>
+        <msg>A commit
+            message</msg>
+    </logentry>
+</log> 
