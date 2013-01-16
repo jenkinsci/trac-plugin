@@ -20,14 +20,16 @@ import org.xml.sax.SAXException;
  * Based on the ViewGetWeb code from
  * @author Paul Nyheim (paul.nyheim@gmail.com)
  */
-public class TracGitRepositoryBrowserTest {
+public class TracGitRepositoryBrowserAppendToTracURLTest {
 
 	/** 
-	 * URL used for testing
+	 * URLs used for testing
 	 */
 	private static final String TRAC_URL = "https://trac";
+	private static final String APPEND_TO_URL = "myRepo/";
 	
-    /**
+	
+	/**
      * TracGitRepositoryBrowser instance used for testing.
      * The getTracWebURL function is mocked to easily return the testing URL. 
      */
@@ -41,10 +43,9 @@ public class TracGitRepositoryBrowserTest {
 
 		@Override
 		protected TracProjectProperty getTracProjectProperty(GitChangeSet changeSet) {
-			return new TracProjectProperty(TRAC_URL, null, null);
+			return new TracProjectProperty(TRAC_URL, null, APPEND_TO_URL);
 	    }
 	}
-
 
         
     /**
@@ -110,7 +111,7 @@ public class TracGitRepositoryBrowserTest {
         final HashMap<String, Path> pathMap = TracGitHelper.createPathMap("rawchangelog");
         final Path path = pathMap.get("src/main/java/hudson/plugins/git/browser/GithubWeb.java");
         final URL fileLink = tracGitBrowser.getFileLink(path);
-        assertEquals(TRAC_URL + "/browser/src/main/java/hudson/plugins/git/browser/GithubWeb.java?rev=396fc230a3db05c427737aa5c2eb7856ba72b05d",
+        assertEquals(TRAC_URL + "/browser/" + APPEND_TO_URL + "src/main/java/hudson/plugins/git/browser/GithubWeb.java?rev=396fc230a3db05c427737aa5c2eb7856ba72b05d",
                 String.valueOf(fileLink));
     }
     
@@ -129,7 +130,7 @@ public class TracGitRepositoryBrowserTest {
         final HashMap<String, Path> pathMap = TracGitHelper.createPathMap("rawchangelog-with-deleted-file");
         final Path path = pathMap.get("bar");
         final URL fileLink = tracGitBrowser.getFileLink(path);
-        assertEquals(TRAC_URL + "/browser/bar?rev=b547aa10c3f06710c6fdfcdb2a9149c81662923b", String.valueOf(fileLink));
+        assertEquals(TRAC_URL + "/browser/" + APPEND_TO_URL + "bar?rev=b547aa10c3f06710c6fdfcdb2a9149c81662923b", String.valueOf(fileLink));
     }
 
 }

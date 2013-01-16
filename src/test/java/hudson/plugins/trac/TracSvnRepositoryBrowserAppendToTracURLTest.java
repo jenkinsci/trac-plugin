@@ -13,19 +13,24 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 
 /**
- * Tests for TracRepositoryBrowser 
+ * Tests for TracGitRepositoryBrowser 
  * 
  * @author Gerd Zanker (gerd.zanker@web.de)
  * 
+ * Based on the ViewGetWeb code from
+ * @author Paul Nyheim (paul.nyheim@gmail.com)
  */
-public class TracSvnRepositoryBrowserTest {
+public class TracSvnRepositoryBrowserAppendToTracURLTest {
 
 	/** 
-	 * URL used for testing
+	 * URLs used for testing
 	 */
 	private static final String TRAC_URL = "https://trac";
+	private static final String APPEND_TO_URL_FOR_CONSTRUCTOR = "myRepo";
+	private static final String APPEND_TO_URL = APPEND_TO_URL_FOR_CONSTRUCTOR + "/";
 	
-    /**
+	
+	/**
      * TracGitRepositoryBrowser instance used for testing.
      * The getTracWebURL function is mocked to easily return the testing URL. 
      */
@@ -39,10 +44,9 @@ public class TracSvnRepositoryBrowserTest {
 
 		@Override
 		protected TracProjectProperty getTracProjectProperty(LogEntry changeSet) {
-			return new TracProjectProperty(TRAC_URL, null, null);
+			return new TracProjectProperty(TRAC_URL, null, APPEND_TO_URL);
 	    }
 	}
-
 
         
     /**
@@ -54,7 +58,7 @@ public class TracSvnRepositoryBrowserTest {
      * @throws IOException
      */
     @Test
-    public void testGetChangeSetLinkSvnChangeSet() throws IOException, SAXException {
+    public void testGetChangeSetLinkGitChangeSet() throws IOException, SAXException {
         final URL changeSetLink = tracSvnBrowser.getChangeSetLink(TracSvnHelper.createChangeSet("changelog_unsorted.xml"));
         assertEquals(TRAC_URL+"/changeset/68100", changeSetLink.toString());
     }
@@ -108,7 +112,7 @@ public class TracSvnRepositoryBrowserTest {
         final HashMap<String, Path> pathMap = TracSvnHelper.createPathMap("changelog_unsorted.xml");
         final Path path = pathMap.get("/src/main/java/hudson/plugins/git/browser/GithubWeb.java");
         final URL fileLink = tracSvnBrowser.getFileLink(path);
-        assertEquals(TRAC_URL + "/browser/src/main/java/hudson/plugins/git/browser/GithubWeb.java#L1",
+        assertEquals(TRAC_URL + "/browser/" + APPEND_TO_URL + "src/main/java/hudson/plugins/git/browser/GithubWeb.java#L1",
                 String.valueOf(fileLink));
     }
     
@@ -127,10 +131,7 @@ public class TracSvnRepositoryBrowserTest {
         final HashMap<String, Path> pathMap = TracSvnHelper.createPathMap("changelog-with-deleted-file.xml");
         final Path path = pathMap.get("/bar");
         final URL fileLink = tracSvnBrowser.getFileLink(path);
-        assertEquals(TRAC_URL + "/browser/bar#L1", String.valueOf(fileLink));
+        assertEquals(TRAC_URL + "/browser/" + APPEND_TO_URL + "bar#L1", String.valueOf(fileLink));
     }
-    
-    
-
-
+       
 }

@@ -3,6 +3,7 @@ package hudson.plugins.trac;
 import hudson.Extension;
 import hudson.model.Descriptor;
 import hudson.model.AbstractProject;
+import hudson.plugins.git.GitChangeSet;
 import hudson.scm.EditType;
 import hudson.scm.RepositoryBrowser;
 import hudson.scm.SubversionChangeLogSet.LogEntry;
@@ -22,11 +23,7 @@ public class TracRepositoryBrowser extends SubversionRepositoryBrowser {
     public TracRepositoryBrowser() {
     }
 
-    /**
-     * Access the Trac ProjectProperty via the changeset.
-	 * This function is protected to allow the test to override it
-	 * and implement a Mock getTracWebURL function to make tests easy.
-	 */
+
     protected TracProjectProperty getTracProjectProperty(LogEntry changeSet) {
     	AbstractProject<?,?> p = (AbstractProject<?,?>)changeSet.getParent().build.getProject();
     	return p.getProperty(TracProjectProperty.class);
@@ -44,8 +41,35 @@ public class TracRepositoryBrowser extends SubversionRepositoryBrowser {
         else
         	return new URL(tpp.tracWebsite);
     }
- 
 
+    /**
+     * Gets the String from {@link TracProjectProperty#tracWebsite} 
+	 * which will be appended to the browser URL.
+     * See JENKINS-13366
+     */
+    private String getTracAppendToBrowserURL(LogEntry changeSet)  {
+    	TracProjectProperty tpp = getTracProjectProperty(changeSet);
+        if(tpp==null || tpp.tracAppendedToBrowserURL==null)   
+        	return "";
+        else {
+        	// remove ending slash, because SVN paths always start with a slash
+        	String appendStr = tpp.tracAppendedToBrowserURL;
+        	if(appendStr.endsWith("/"))
+        		return "/" + appendStr.substring(0, appendStr.length()-1);
+        	else 
+        		return "/" + appendStr;
+        }
+    }
+    
+    private String getPath(Path path) {
+        String pathValue = path.getValue();
+        TracProjectProperty tpp = getTracProjectProperty(path.getLogEntry());
+        if(tpp != null && tpp.tracStrippedFromChangesetPath != null && pathValue != null
+            && pathValue.startsWith(tpp.tracStrippedFromChangesetPath))
+            return pathValue.substring(tpp.tracStrippedFromChangesetPath.length());
+        else
+            return pathValue;
+    }
 
     @Override
     public URL getDiffLink(Path path) throws IOException {
@@ -53,13 +77,13 @@ public class TracRepositoryBrowser extends SubversionRepositoryBrowser {
             return null;    // no diff if this is not an edit change
         URL baseUrl = getTracWebURL(path.getLogEntry());
         int revision = path.getLogEntry().getRevision();
-        return new URL(baseUrl, "changeset/" + revision + path.getValue() + "#file0");
+        return new URL(baseUrl, "changeset/" + revision + getPath(path) + "#file0");
     }
 
     @Override
     public URL getFileLink(Path path) throws IOException {
         URL baseUrl = getTracWebURL(path.getLogEntry());
-        return baseUrl == null ? null : new URL(baseUrl, "browser" + path.getValue() + "#L1");
+        return baseUrl == null ? null : new URL(baseUrl, "browser" + getTracAppendToBrowserURL(path.getLogEntry()) + getPath(path) + "#L1");
     }
 
     @Override
