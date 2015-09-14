@@ -44,7 +44,7 @@ public class TracSvnRepositoryBrowserAppendToTracURLTest {
 
 		@Override
 		protected TracProjectProperty getTracProjectProperty(LogEntry changeSet) {
-			return new TracProjectProperty(TRAC_URL, null, APPEND_TO_URL);
+			return new TracProjectProperty(TRAC_URL, null, APPEND_TO_URL, null);
 	    }
 	}
 

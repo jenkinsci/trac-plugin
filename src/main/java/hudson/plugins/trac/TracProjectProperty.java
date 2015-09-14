@@ -40,14 +40,19 @@ public final class TracProjectProperty extends JobProperty<AbstractProject<?,?>>
      */
     public final String tracAppendedToBrowserURL;
 
-    
+    /**
+     * The repository name registered in Trac.
+     * Null if this is not configured yet.
+     */
+    public final String tracTracRepositoryName;
+
     @Deprecated
     public TracProjectProperty(String tracWebsite) {
-        this(tracWebsite, null, null);
+        this(tracWebsite, null, null, null);
     }
 
     @DataBoundConstructor
-    public TracProjectProperty(String tracWebsite, String tracStrippedFromChangesetPath, String tracAppendedToBrowserURL) {
+    public TracProjectProperty(String tracWebsite, String tracStrippedFromChangesetPath, String tracAppendedToBrowserURL, String tracTracRepositoryName) {
         // normalize
         if(tracWebsite==null || tracWebsite.length()==0)
             tracWebsite=null;
@@ -63,9 +68,12 @@ public final class TracProjectProperty extends JobProperty<AbstractProject<?,?>>
             if(!tracAppendedToBrowserURL.endsWith("/"))
             	tracAppendedToBrowserURL += '/';
         }
+        if(tracTracRepositoryName==null || tracTracRepositoryName.length()==0)
+        	tracTracRepositoryName=null;
         this.tracWebsite = tracWebsite;
         this.tracStrippedFromChangesetPath = tracStrippedFromChangesetPath;
         this.tracAppendedToBrowserURL = tracAppendedToBrowserURL;
+        this.tracTracRepositoryName = tracTracRepositoryName;
     }
 
     @Override

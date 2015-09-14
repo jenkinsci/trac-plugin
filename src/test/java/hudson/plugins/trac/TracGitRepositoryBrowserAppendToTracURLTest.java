@@ -43,7 +43,7 @@ public class TracGitRepositoryBrowserAppendToTracURLTest {
 
 		@Override
 		protected TracProjectProperty getTracProjectProperty(GitChangeSet changeSet) {
-			return new TracProjectProperty(TRAC_URL, null, APPEND_TO_URL);
+			return new TracProjectProperty(TRAC_URL, null, APPEND_TO_URL, null);
 	    }
 	}
 

@@ -43,7 +43,7 @@ public class TracSvnRepositoryBrowserStripFromPathTest {
 
 		@Override
 		protected TracProjectProperty getTracProjectProperty(LogEntry changeSet) {
-			return new TracProjectProperty(TRAC_URL, STRIP_FROM_PATH, null);
+			return new TracProjectProperty(TRAC_URL, STRIP_FROM_PATH, null, null);
 	    }
 	}
 

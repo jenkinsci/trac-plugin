@@ -61,6 +61,14 @@ public class TracRepositoryBrowser extends SubversionRepositoryBrowser {
         }
     }
     
+    private String getTracRepositoryNamePath(LogEntry changeSet) {
+    	TracProjectProperty tpp = getTracProjectProperty(changeSet);
+        if(tpp==null || tpp.tracTracRepositoryName==null)   
+        	return "";
+        else
+        	return "/" + tpp.tracTracRepositoryName;
+    }
+    
     private String getPath(Path path) {
         String pathValue = path.getValue();
         TracProjectProperty tpp = getTracProjectProperty(path.getLogEntry());
@@ -82,14 +90,17 @@ public class TracRepositoryBrowser extends SubversionRepositoryBrowser {
 
     @Override
     public URL getFileLink(Path path) throws IOException {
-        URL baseUrl = getTracWebURL(path.getLogEntry());
-        return baseUrl == null ? null : new URL(baseUrl, "browser" + getTracAppendToBrowserURL(path.getLogEntry()) + getPath(path) + "#L1");
+    	LogEntry changeSet = path.getLogEntry();
+        URL baseUrl = getTracWebURL(changeSet);
+        return baseUrl == null ? null : new URL(baseUrl,
+        		"browser" + getTracRepositoryNamePath(changeSet) + getTracAppendToBrowserURL(changeSet) + getPath(path) + "#L1");
     }
 
     @Override
     public URL getChangeSetLink(LogEntry changeSet) throws IOException {
         URL baseUrl = getTracWebURL(changeSet);
-        return baseUrl == null ? null : new URL(baseUrl, "changeset/" + changeSet.getRevision());
+        return baseUrl == null ? null : new URL(baseUrl,
+        		"changeset/" + changeSet.getRevision() + getTracRepositoryNamePath(changeSet));
     }
 
     @Extension

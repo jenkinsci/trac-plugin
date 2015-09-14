@@ -41,7 +41,7 @@ public class TracGitRepositoryBrowserTest {
 
 		@Override
 		protected TracProjectProperty getTracProjectProperty(GitChangeSet changeSet) {
-			return new TracProjectProperty(TRAC_URL, null, null);
+			return new TracProjectProperty(TRAC_URL, null, null, null);
 	    }
 	}
 
