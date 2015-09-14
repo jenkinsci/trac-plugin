@@ -39,7 +39,7 @@ public class TracSvnRepositoryBrowserTest {
 
 		@Override
 		protected TracProjectProperty getTracProjectProperty(LogEntry changeSet) {
-			return new TracProjectProperty(TRAC_URL, null, null);
+			return new TracProjectProperty(TRAC_URL, null, null, null);
 	    }
 	}
 

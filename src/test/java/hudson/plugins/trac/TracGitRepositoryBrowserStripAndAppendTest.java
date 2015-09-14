@@ -45,7 +45,7 @@ public class TracGitRepositoryBrowserStripAndAppendTest {
 
 		@Override
 		protected TracProjectProperty getTracProjectProperty(GitChangeSet changeSet) {
-			return new TracProjectProperty(TRAC_URL, STRIP_FROM_PATH, APPEND_TO_URL);
+			return new TracProjectProperty(TRAC_URL, STRIP_FROM_PATH, APPEND_TO_URL, null);
 	    }
 	}
 

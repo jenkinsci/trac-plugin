@@ -68,6 +68,14 @@ public class TracGitRepositoryBrowser extends GitRepositoryBrowser {
         	return tpp.tracAppendedToBrowserURL;
     }    
 
+    private String getTracRepositoryNamePath(GitChangeSet changeset) {
+    	TracProjectProperty tpp = getTracProjectProperty(changeset);
+        if(tpp==null || tpp.tracTracRepositoryName==null)   
+        	return "";
+        else
+        	return "/" + tpp.tracTracRepositoryName;
+    }
+    
     private String getPath(Path path) {
         String pathValue = path.getPath();
         TracProjectProperty tpp = getTracProjectProperty(path.getChangeSet());
@@ -93,31 +101,34 @@ public class TracGitRepositoryBrowser extends GitRepositoryBrowser {
     	// Instead of https://fedorahosted.org/eclipse-fedorapackager/changeset/0956859f7db2656cae445488689a214c104bf1b3#file3
     	// e.g.       https://fedorahosted.org/eclipse-fedorapackager/changeset/0956859f7db2656cae445488689a214c104bf1b3/org.fedoraproject.eclipse.packager.rpm/src/org/fedoraproject/eclipse/packager/rpm/internal/handlers/SRPMImportHandler.java
         if (path.getEditType() == EditType.EDIT) {
-        	return new URL(getTracWebURL(path.getChangeSet()), getChangeSetLink(path.getChangeSet()).toString() + "/" + getPath(path) );            
+        	GitChangeSet changeset = path.getChangeSet();
+        	return new URL(getTracWebURL(changeset),
+        			getChangeSetLink(changeset).toString() + getTracRepositoryNamePath(changeset) + "/" + getPath(path) );            
         }
         return null;
     }
 
 	@Override
     public URL getFileLink(Path path) throws IOException {
-    	// returns <url>"/browser/"<file>"$rev="<changsetID>
+    	// returns <url>"/browser/"<file>"$rev="<changeSetID>
     	// e.g. https://fedorahosted.org/eclipse-fedorapackager/browser/org.fedoraproject.eclipse.packager.rpm/src/org/fedoraproject/eclipse/packager/rpm/RpmText.java?rev=0956859f7db2656cae445488689a214c104bf1b3
         String spec;
-        URL url = getTracWebURL(path.getChangeSet());
+        GitChangeSet changeset = path.getChangeSet();
+        URL url = getTracWebURL(changeset);
         if (path.getEditType() == EditType.DELETE) {
-        	spec = new QueryBuilder(url.getQuery()).add("rev="+path.getChangeSet().getParentCommit()).toString();
+        	spec = new QueryBuilder(url.getQuery()).add("rev="+changeset.getParentCommit()).toString();
         } else {
-        	spec = new QueryBuilder(url.getQuery()).add("rev="+path.getChangeSet().getId()).toString();
+        	spec = new QueryBuilder(url.getQuery()).add("rev="+changeset.getId()).toString();
         }
-        return new URL(url, url.getPath() + "browser/" + getTracAppendToBrowserURL(path.getChangeSet()) + getPath(path) + spec);
+        return new URL(url, url.getPath() + "browser" + getTracRepositoryNamePath(changeset) + "/" + getTracAppendToBrowserURL(changeset) + getPath(path) + spec);
     }
 
     @Override
-    public URL getChangeSetLink(GitChangeSet changeSet) throws IOException {
-    	// returns <url>"/changeset/"<changsetID>
+    public URL getChangeSetLink(GitChangeSet changeset) throws IOException {
+    	// returns <url>"/changeset/"<changeSetID>
     	// e.g. https://fedorahosted.org/eclipse-fedorapackager/changeset/0956859f7db2656cae445488689a214c104bf1b3
-        URL url = getTracWebURL(changeSet);
-        return new URL(url, url.getPath() + "changeset/" + changeSet.getId());
+        URL url = getTracWebURL(changeset);
+        return new URL(url, url.getPath() + "changeset/" + changeset.getId() + getTracRepositoryNamePath(changeset));
     }
 
     
